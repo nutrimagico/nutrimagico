@@ -1,0 +1,1952 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nutri Mágico</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.1.0/iconfont/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#14161A; --surface:#1D2026; --surface2:#262A32; --bone:#F2F0EA;
+  --dim:#A8A6A0; --fuel:#FF5A1F; --fuel-d:#3A2018; --steel:#5B86A8;
+  --steel-d:#1C2A33; --olive:#8AA058; --olive-d:#232A1B;
+  --purple:#9B7EC8; --purple-d:#2A1E3A; --line:#32363E; --r:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--bone);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+.ab{font-family:'Archivo Black',sans-serif}
+.hidden{display:none!important}
+
+/* ── LAYOUT ── */
+.screen{max-width:520px;margin:0 auto;padding:24px 16px 80px}
+.screen.wide{max-width:860px}
+
+/* ── LOGIN ── */
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+.login-box{width:100%;max-width:380px}
+.logo-mark{font-size:36px;margin-bottom:4px}
+.logo-title{font-family:'Archivo Black',sans-serif;font-size:28px;line-height:1;margin-bottom:4px}
+.logo-sub{font-size:13px;color:var(--dim);margin-bottom:32px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.field input,.field select{width:100%;background:var(--surface);border:1px solid var(--line);color:var(--bone);border-radius:var(--r);padding:12px 14px;font-size:15px;font-family:'Inter',sans-serif;outline:none}
+.field input:focus,.field select:focus{border-color:var(--fuel)}
+.btn{display:block;width:100%;background:var(--fuel);color:#fff;border:none;border-radius:var(--r);padding:14px;font-size:15px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;text-align:center;transition:.15s}
+.btn:active{transform:scale(.98)}
+.btn.secondary{background:var(--surface);color:var(--bone);border:1px solid var(--line)}
+.btn.sm{padding:9px 16px;font-size:13px;width:auto;display:inline-block}
+.error-msg{color:#ff6b6b;font-size:13px;margin-top:10px;text-align:center}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.topbar-left .eyebrow{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:3px}
+.topbar-left .name{font-family:'Archivo Black',sans-serif;font-size:22px;line-height:1}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--fuel);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;cursor:pointer;border:none;color:#fff;font-family:'Inter',sans-serif}
+
+/* ── SCOREBOARD ── */
+.scoreboard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin-bottom:20px;border-left:4px solid var(--fuel)}
+.scoreboard .date{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.scoreboard .summary{font-size:15px;line-height:1.5}
+.scoreboard .summary b{color:var(--fuel)}
+
+/* ── GRID CARDS ── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.card .ci{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.card .ci i{font-size:18px}
+.card .ci .unit{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+.card .bnum{font-family:'Archivo Black',sans-serif;font-size:26px;line-height:1;margin-bottom:2px}
+.card .sub{font-size:12px;color:var(--dim);margin-bottom:8px}
+.bar{height:7px;background:var(--surface2);border-radius:4px;overflow:hidden}
+.bar-f{height:100%;border-radius:4px;transition:width .4s}
+.c-water .ci i{color:var(--steel)} .c-water .bar-f{background:var(--steel)}
+.c-train .ci i{color:var(--fuel)} .c-train .bar-f{background:var(--fuel)}
+.c-diet .ci i{color:var(--olive)} .c-diet .bar-f{transition:width .4s, background .4s}
+.c-streak .ci i{color:var(--bone)}
+
+/* ── SECTION ── */
+.sec-title{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--dim);margin:20px 0 10px}
+
+/* ── QUICK WATER ── */
+.water-actions{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.water-actions button{flex:1;min-width:80px;background:var(--surface);border:1px solid var(--line);color:var(--steel);border-radius:10px;padding:10px 8px;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.water-actions button i{font-size:16px}
+.water-actions button:active{transform:scale(.97)}
+
+/* ── TRAIN BLOCK ── */
+.train-block{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+.train-block .row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.train-block .row .t1{font-size:14px;font-weight:600}
+.train-block .row .t2{font-size:12px;color:var(--dim)}
+.train-type-sel{width:100%;background:var(--surface2);border:1px solid var(--line);color:var(--bone);border-radius:8px;padding:10px 12px;font-size:14px;font-family:'Inter',sans-serif;margin-bottom:10px;outline:none}
+.train-type-sel:focus{border-color:var(--fuel)}
+.mark-btn{background:var(--fuel);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer}
+.mark-btn.done{background:var(--olive)}
+.train-list{margin-top:8px}
+.train-tag{display:inline-flex;align-items:center;gap:6px;background:var(--fuel-d);color:var(--fuel);border-radius:20px;padding:4px 10px;font-size:12px;font-weight:600;margin:3px}
+.train-tag button{background:none;border:none;color:var(--fuel);cursor:pointer;font-size:14px;line-height:1;padding:0}
+
+/* ── DIET SLIDER ── */
+.diet-block{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+.diet-block .row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.pct-display{font-family:'Archivo Black',sans-serif;font-size:28px;color:var(--olive)}
+.pct-slider{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.pct-btn{background:var(--surface2);border:1px solid var(--line);color:var(--dim);border-radius:8px;padding:6px 0;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;flex:1;min-width:40px;text-align:center}
+.pct-btn.sel{background:var(--olive-d);color:var(--olive);border-color:var(--olive)}
+
+/* ── LIVRE ── */
+.livre-block{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+.livre-block .row{display:flex;justify-content:space-between;align-items:center;margin-bottom:0}
+.livre-expand{margin-top:12px}
+.livre-expand textarea{width:100%;background:var(--surface2);border:1px solid var(--line);color:var(--bone);border-radius:8px;padding:10px;font-size:13px;font-family:'Inter',sans-serif;resize:vertical;min-height:70px;outline:none}
+.livre-expand textarea:focus{border-color:var(--fuel)}
+.pill-toggle{display:flex;background:var(--surface2);border-radius:20px;padding:3px}
+.pill-toggle button{border:none;background:transparent;color:var(--dim);font-size:12px;font-weight:600;padding:6px 14px;border-radius:18px;cursor:pointer;font-family:'Inter',sans-serif}
+.pill-toggle button.on{background:var(--olive);color:#16200E}
+.pill-toggle button.on-fuel{background:var(--fuel);color:#2B1106}
+
+/* ── BEM ESTAR ── */
+.bem-block{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+.bem-block .row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.feelings{display:flex;flex-wrap:wrap;gap:6px}
+.feel-btn{background:var(--surface2);border:1px solid var(--line);color:var(--dim);border-radius:20px;padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif}
+.feel-btn.sel{background:var(--purple-d);color:var(--purple);border-color:var(--purple)}
+
+/* ── HISTÓRICO 7 DIAS ── */
+.hist-block{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:4px 16px;margin-bottom:10px}
+.hist-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+.hist-row:last-child{border-bottom:none}
+.hist-row .day{font-size:13px;color:var(--dim);width:52px}
+.hist-dots{display:flex;gap:6px;align-items:center}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.dot.w{background:var(--steel)} .dot.t{background:var(--fuel)}
+.dot.d{background:var(--olive)} .dot.b{background:var(--purple)}
+.hist-row .feel-label{font-size:11px;color:var(--purple);flex:1;text-align:right}
+.legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;margin-bottom:20px}
+.legend span{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--dim)}
+.legend .dot{width:8px;height:8px}
+
+/* ── GRÁFICO MENSAL ── */
+.month-block{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+.month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:12px}
+.month-cell{display:flex;flex-direction:column;align-items:center;gap:3px}
+.month-cell .day-num{font-size:9px;color:var(--dim);margin-bottom:1px;text-align:center}
+.month-cell .mdots{display:flex;flex-direction:column;gap:2px;align-items:center}
+.month-cell{min-height:38px}
+
+/* ── WHATSAPP BTN ── */
+.wpp-btn{display:flex;align-items:center;justify-content:center;gap:10px;background:#25D366;color:#fff;border:none;border-radius:var(--r);padding:14px;font-size:15px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;width:100%;margin-bottom:16px;text-decoration:none}
+.wpp-btn i{font-size:20px}
+
+/* ── NUTRICIONISTA PAINEL ── */
+.patient-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:.15s}
+.patient-card:hover{border-color:var(--fuel)}
+.patient-card .pc-row{display:flex;justify-content:space-between;align-items:center}
+.patient-card .pc-name{font-weight:700;font-size:15px;margin-bottom:3px}
+.patient-card .pc-meta{font-size:12px;color:var(--dim)}
+.patient-card .pc-dots{display:flex;gap:5px}
+.pc-score{font-family:'Archivo Black',sans-serif;font-size:20px;color:var(--fuel)}
+.back-btn{display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--dim);font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;margin-bottom:16px;padding:0}
+.back-btn:hover{color:var(--bone)}
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.filter-chip{background:var(--surface);border:1px solid var(--line);color:var(--dim);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap}
+.filter-chip.on{background:var(--fuel);border-color:var(--fuel);color:#fff}
+.pc-inactive{color:var(--fuel)!important;text-decoration:underline dotted}
+.pc-badge{font-size:10px;color:var(--fuel);font-weight:700;margin-left:5px}
+.wpp-sm{display:inline-flex;align-items:center;gap:4px;background:#25D366;color:#fff;border:none;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;text-decoration:none}
+.tag-pill{display:inline-flex;align-items:center;background:var(--surface2);border:1px solid var(--line);color:var(--dim);border-radius:10px;padding:2px 8px;font-size:11px;margin:2px}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center}
+
+/* ── GOAL EDITOR ── */
+.goal-editor{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+.goal-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.goal-row:last-child{margin-bottom:0}
+.goal-row label{font-size:13px;font-weight:500}
+.goal-row .num-ctrl{display:flex;align-items:center;gap:8px}
+.num-ctrl button{width:28px;height:28px;border-radius:8px;background:var(--surface2);border:1px solid var(--line);color:var(--bone);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.num-ctrl span{font-family:'Archivo Black',sans-serif;font-size:16px;min-width:32px;text-align:center}
+.goal-row{flex-wrap:wrap}
+.edit-tag-del{background:none;border:none;color:inherit;cursor:pointer;font-size:13px;padding:0;margin-left:2px}
+.tag-pill-edit{display:inline-flex;align-items:center;background:var(--fuel-d);border:1px solid var(--fuel);color:var(--fuel);border-radius:10px;padding:3px 8px;font-size:12px;margin:2px;font-weight:600}
+
+/* ── DIET CHART ── */
+.diet-chart{display:flex;align-items:flex-end;gap:4px;height:80px;margin-top:10px}
+.diet-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.diet-bar-wrap .db{width:100%;background:var(--olive);border-radius:3px 3px 0 0;transition:height .4s;min-height:2px}
+.diet-bar-wrap .dl{font-size:9px;color:var(--dim)}
+
+/* ── TABS ── */
+.tabs{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:4px;margin-bottom:18px;gap:4px}
+.tab{flex:1;border:none;background:transparent;color:var(--dim);font-size:13px;font-weight:600;font-family:'Inter',sans-serif;padding:9px 4px;border-radius:8px;cursor:pointer}
+.tab.on{background:var(--fuel);color:#fff}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--fuel);color:var(--bone);padding:10px 20px;border-radius:20px;font-size:13px;font-weight:500;z-index:999;opacity:0;transition:.3s;pointer-events:none}
+.toast.show{opacity:1}
+
+@media(max-width:400px){.grid2{grid-template-columns:1fr}.pct-btn{font-size:11px}}
+.diary-entry{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:8px}
+.hist-icon{font-size:15px;line-height:1}
+.hist-off{opacity:.15}
+.hist-dots{gap:4px}
+.diary-entry .de-img{width:100%;max-height:180px;object-fit:cover;display:block}
+.diary-entry .de-body{padding:10px 14px}
+.diary-entry .de-meal{font-size:12px;font-weight:700;color:var(--fuel);text-transform:uppercase;letter-spacing:.06em}
+.diary-entry .de-time{font-size:11px;color:var(--dim)}
+.diary-entry .de-desc{font-size:13px;color:var(--bone);margin-top:4px;line-height:1.4}
+.diary-entry .de-del{background:none;border:none;color:var(--dim);font-size:11px;cursor:pointer;margin-top:6px;padding:0}
+.pnav-btn{transition:.15s}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="logo-mark">🌿</div>
+    <h1 class="logo-title">Nutri Mágico</h1>
+    <p class="logo-sub">Acompanhamento de performance e bem-estar</p>
+    <div class="field"><label>CPF</label><input type="text" id="loginEmail" placeholder="000.000.000-00"></div>
+    <div class="field"><label>Senha</label><input type="password" id="loginPass" placeholder="••••••"></div>
+    <button class="btn" onclick="doLogin()">Entrar</button>
+    <p class="error-msg hidden" id="loginErr">E-mail ou senha incorretos.</p>
+    <p style="font-size:11px;color:var(--dim);margin-top:18px;text-align:center">
+      Pacientes: CPF + 4 últimos dígitos do WhatsApp<br>
+      Nutricionista: CPF + senha cadastrada
+    </p>
+  </div>
+</div>
+
+<!-- ══ PACIENTE ══ -->
+<div id="patientScreen" class="hidden screen">
+
+  <div id="viewDaily">
+
+  <!-- 1) NOME E SAUDAÇÃO -->
+  <div class="topbar" style="margin-bottom:16px">
+    <div class="topbar-left">
+      <div class="eyebrow">Olá,</div>
+      <div class="name" id="pName">—</div>
+    </div>
+    <button class="avatar" onclick="logout()" title="Sair" id="pAvatar">?</button>
+  </div>
+
+  <!-- 2) QUADRO RESUMO: dieta → água → treinos → sequência -->
+  <div class="scoreboard">
+    <div class="date" id="pDate">—</div>
+    <div class="summary" id="pSummary">—</div>
+  </div>
+
+  <div class="grid2">
+    <div class="card c-water">
+      <div class="ci"><i class="ti ti-glass-full"></i><span class="unit">litros</span></div>
+      <div class="bnum" id="pWaterNum">0.0</div>
+      <div class="sub">meta: <span id="pWaterGoal">—</span> L</div>
+      <div class="bar"><div class="bar-f" id="pWaterBar" style="width:0%"></div></div>
+    </div>
+    <div class="card c-diet">
+      <div class="ci"><i class="ti ti-checklist"></i><span class="unit">semana</span></div>
+      <div class="bnum" id="pDietNum">—%</div>
+      <div class="sub">adesão à dieta essa semana</div>
+      <div class="bar"><div class="bar-f" id="pDietBar" style="width:0%"></div></div>
+    </div>
+    <div class="card c-train">
+      <div class="ci"><i class="ti ti-barbell"></i><span class="unit">semana</span></div>
+      <div class="bnum" id="pTrainNum">0/0</div>
+      <div class="sub">treinos feitos</div>
+      <div class="bar"><div class="bar-f" id="pTrainBar" style="width:0%"></div></div>
+    </div>
+    <div class="card c-streak">
+      <div class="ci"><i class="ti ti-flame"></i><span class="unit">sequência</span></div>
+      <div class="bnum" id="pStreak">0</div>
+      <div class="sub" style="font-size:10px;line-height:1.3">Dias perfeitos<br><span style="color:var(--dim)">(água + dieta 100%)</span></div>
+      <div class="bar"><div class="bar-f" style="width:100%;background:var(--dim)"></div></div>
+    </div>
+  </div>
+
+  <!-- 3) HIDRATAÇÃO -->
+  <p class="sec-title">💧 Hidratação</p>
+  <div class="water-actions">
+    <button onclick="addWater(0.2)"><i class="ti ti-plus"></i>+200ml</button>
+    <button onclick="addWater(0.5)"><i class="ti ti-plus"></i>+500ml</button>
+    <button onclick="addWater(1.0)"><i class="ti ti-plus"></i>+1L</button>
+  </div>
+
+  <!-- 4) TREINO -->
+  <p class="sec-title">🏋️ Treino</p>
+  <div class="train-block">
+    <div class="row">
+      <div><div class="t1">Registrar treino</div><div class="t2" id="pTrainToday">Nenhum hoje</div></div>
+    </div>
+    <select class="train-type-sel" id="trainTypeSel"></select>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+      <input type="number" id="trainCal" min="0" max="5000" placeholder="Calorias gastas (kcal)" style="flex:1;background:var(--surface2);border:1px solid var(--line);color:var(--bone);border-radius:8px;padding:10px 12px;font-size:14px;font-family:'Inter',sans-serif;outline:none">
+      <span style="font-size:12px;color:var(--dim);white-space:nowrap">kcal</span>
+    </div>
+    <button class="mark-btn" onclick="addTrain()"><i class="ti ti-plus"></i> Adicionar treino</button>
+    <div class="train-list" id="trainList"></div>
+  </div>
+
+  <!-- 5) ADESÃO À DIETA -->
+  <p class="sec-title">🥗 Adesão à dieta</p>
+  <div class="diet-block">
+    <div class="row">
+      <div><div class="t1">% do plano cumprido hoje</div><div class="t2">Selecione abaixo</div></div>
+      <div class="pct-display" id="pDietPct">—</div>
+    </div>
+    <div class="pct-slider" id="pctBtns"></div>
+    <p class="sec-title" style="margin-top:8px;margin-bottom:6px">Média semanal</p>
+    <div class="diet-chart" id="dietChart"></div>
+  </div>
+
+  <!-- 6) REFEIÇÃO LIVRE -->
+  <p class="sec-title">🍕 Refeição livre</p>
+  <div class="livre-block">
+    <div class="row">
+      <div><div class="t1">Fez uma refeição livre hoje?</div><div class="t2" id="livreStatus">não registrado</div></div>
+      <div class="pill-toggle">
+        <button id="livreSimBtn" onclick="setLivre(true)">sim</button>
+        <button id="livreNaoBtn" onclick="setLivre(false)">não</button>
+      </div>
+    </div>
+    <div class="livre-expand hidden" id="livreExpand">
+      <div style="margin-bottom:8px">
+        <label style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:5px">Descreva a refeicao (alimentos e quantidades)</label>
+        <textarea id="livreText" placeholder="Ex: 2 fatias de pizza, 1 cerveja 350ml..." style="width:100%;background:var(--surface2);border:1px solid var(--line);color:var(--bone);border-radius:8px;padding:10px;font-size:13px;font-family:'Inter',sans-serif;resize:vertical;min-height:65px;outline:none"></textarea>
+      </div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:5px">Motivo da refeicao livre</label>
+        <select id="livreMotivo" style="width:100%;background:var(--surface2);border:1px solid var(--line);color:var(--bone);border-radius:8px;padding:10px 12px;font-size:13px;font-family:'Inter',sans-serif;outline:none">
+          <option value="">Selecione o motivo...</option>
+          <option>Aniversario</option>
+          <option>Celebracao / Comemoracao</option>
+          <option>Confraternizacao</option>
+          <option>Refeicao livre planejada</option>
+          <option>Evento social</option>
+          <option>Viagem</option>
+          <option>Estresse / Ansiedade</option>
+          <option>Vontade espontanea</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <button class="btn sm secondary" style="margin-top:2px" onclick="saveLivreText()">Salvar no diario</button>
+    </div>
+    <div id="livreHistory" style="margin-top:10px"></div>
+  </div>
+
+  <!-- 7) BEM-ESTAR -->
+  <p class="sec-title">💜 Como você está se sentindo hoje?</p>
+  <div class="bem-block">
+    <div class="row">
+      <div><div class="t1">Humor</div><div class="t2" id="humorStatus">não registrado</div></div>
+    </div>
+    <div class="feelings" id="feelBtns"></div>
+  </div>
+
+  <!-- 8) ÚLTIMOS 7 DIAS -->
+  <p class="sec-title">📅 Semana atual</p>
+  <div class="hist-block" id="histBlock"></div>
+  <div class="legend">
+    <span>💧 água batida</span> <span>🔥 treinou</span>
+    <span>🥗 dieta ≥80%</span> <span>🍕 refeição livre</span> <span>😊 humor do dia</span>
+  </div>
+
+  <!-- 9) MÊS ATUAL -->
+  <p class="sec-title">📆 Mês atual</p>
+  <div class="month-block">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:13px;font-weight:600" id="monthLabel">—</span>
+    </div>
+    <div class="month-grid" id="monthGrid"></div>
+    <div class="legend" style="margin-top:10px;margin-bottom:0">
+      <span>💧 água</span>
+      <span>🔥 treino</span>
+      <span>🥗 dieta≥80%</span>
+      <span>🍕 refeição livre</span>
+      <span>😊 humor</span>
+    </div>
+  </div>
+
+  </div><!-- /viewDaily -->
+
+  <!-- WHATSAPP -->
+  <!-- NAV TABS -->
+  <div id="pNavTabs" style="display:flex;gap:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:20px">
+    <button id="pnavDaily" onclick="setPView('daily')" style="flex:1;border:none;background:var(--fuel);color:#fff;padding:11px 4px;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer">Hoje</button>
+    <button id="pnavDiary" onclick="setPView('diary')" style="flex:1;border:none;background:transparent;color:var(--dim);padding:11px 4px;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer">Diario alimentar</button>
+  </div>
+
+  <!-- DIARIO ALIMENTAR (oculto por padrao) -->
+  <div id="viewDiary" style="display:none">
+    <div style="background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:12px">
+      <p class="sec-title" style="margin-top:0">Registrar refeicao</p>
+      <div style="margin-bottom:8px">
+        <label style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:8px">📸 Foto da refeição (opcional)</label>
+        <!-- Input oculto — acionado pelos botões abaixo -->
+        <input type="file" id="diaryPhoto" accept="image/*" style="display:none">
+        <input type="file" id="diaryPhotoCamera" accept="image/*" capture="environment" style="display:none">
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <button type="button" onclick="openDiaryCamera()" style="flex:1;background:var(--surface2);border:1px solid var(--line);color:var(--bone);border-radius:10px;padding:12px 8px;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px">
+            <span style="font-size:24px">📷</span>Câmera
+          </button>
+          <button type="button" onclick="openDiaryGallery()" style="flex:1;background:var(--surface2);border:1px solid var(--line);color:var(--bone);border-radius:10px;padding:12px 8px;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px">
+            <span style="font-size:24px">🖼️</span>Galeria
+          </button>
+        </div>
+        <div id="diaryPhotoPreview" style="display:none;margin-top:4px;position:relative">
+          <img id="diaryPhotoImg" style="width:100%;border-radius:10px;max-height:220px;object-fit:cover;display:block">
+          <button type="button" onclick="removeDiaryPhoto()" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:20px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif">✕ remover</button>
+        </div>
+      </div>
+      <div style="margin-bottom:8px">
+        <label style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:6px">Tipo de refeicao</label>
+        <select id="diaryMeal" style="width:100%;background:var(--surface2);border:1px solid var(--line);color:var(--bone);border-radius:8px;padding:10px 12px;font-size:13px;font-family:'Inter',sans-serif;outline:none">
+          <option value="">Selecione...</option>
+          <option>Cafe da manha</option><option>Lanche da manha</option>
+          <option>Almoco</option><option>Lanche da tarde</option>
+          <option>Jantar</option><option>Ceia</option>
+          <option>Pre-treino</option><option>Pos-treino</option><option>Outro</option>
+        </select>
+      </div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:6px">Descrição (alimentos, quantidades ou comentários)</label>
+        <textarea id="diaryDesc" placeholder="Ex: 150g de frango grelhado, 1 xíc. de arroz integral, salada à vontade. Achei a refeição equilibrada!" style="width:100%;background:var(--surface2);border:1px solid var(--line);color:var(--bone);border-radius:8px;padding:10px;font-size:13px;font-family:'Inter',sans-serif;resize:vertical;min-height:70px;outline:none"></textarea>
+      </div>
+      <button onclick="addDiaryEntry()" style="display:block;width:100%;background:var(--fuel);color:#fff;border:none;border-radius:var(--r);padding:13px;font-size:14px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer">Registrar refeicao</button>
+    </div>
+    <div id="diaryList"></div>
+  </div>
+
+  <a href="https://wa.me/5511972163767" target="_blank" class="wpp-btn">
+    <i class="ti ti-brand-whatsapp"></i> Fale com o Nutri Magico
+  </a>
+</div>
+
+<!-- ══ NUTRICIONISTA ══ -->
+<div id="nutriScreen" class="hidden screen wide">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="eyebrow">Painel do</div>
+      <div class="name">Nutri Mágico</div>
+    </div>
+    <button class="avatar" onclick="logout()" title="Sair" style="background:var(--steel)">Y</button>
+  </div>
+
+  <!-- Lista de pacientes -->
+  <div id="nutriList"></div>
+  <div class="modal-bg" id="newPatientModal">
+    <div style="background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;width:90%;max-width:400px;max-height:90vh;overflow-y:auto">
+      <h3 style="font-family:'Archivo Black',sans-serif;font-size:18px;margin-bottom:16px">Novo paciente</h3>
+      <div class="field"><label>Nome completo *</label><input id="npName" type="text" placeholder="Ana Beatriz Silva"></div>
+      <div class="field"><label>CPF (será o login) *</label><input id="npEmail" type="text" placeholder="000.000.000-00" maxlength="14" inputmode="numeric"></div>
+      <div class="field" style="background:var(--surface2);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;font-size:13px;color:var(--dim)">
+        🔑 A senha será gerada automaticamente: últimos 4 dígitos do WhatsApp
+      </div>
+      <div class="field"><label>WhatsApp (55+DDD)</label><input id="npPhone" type="tel" placeholder="5511999990000"></div>
+      <div class="field"><label>Etiquetas</label><div id="npTagsWrap" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px"></div><div style="display:flex;gap:6px"><input id="npTagInput" type="text" placeholder="Nova etiqueta..." style="flex:1;background:var(--surface2);border:1px solid var(--line);color:var(--bone);border-radius:8px;padding:8px 10px;font-size:13px;font-family:'Inter',sans-serif;outline:none"><button onclick="addNpTag()" style="background:var(--surface2);border:1px solid var(--line);color:var(--bone);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">+</button></div></div>
+      <div style="display:flex;gap:8px;margin-top:16px"><button onclick="closeNewPatient()" class="btn secondary" style="flex:1">Cancelar</button><button onclick="saveNewPatient()" class="btn" style="flex:1">Cadastrar</button></div>
+    </div>
+  </div>
+
+  <!-- Detalhe do paciente -->
+  <div id="nutriDetail" class="hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <button class="back-btn" style="margin-bottom:0" onclick="showNutriList()"><i class="ti ti-arrow-left"></i> Pacientes</button>
+      <a id="detailWppBtn" href="#" target="_blank" class="wpp-sm"><i class="ti ti-brand-whatsapp"></i> WhatsApp</a>
+    </div>
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="eyebrow">Acompanhamento</div>
+        <div class="name" id="detailName">—</div>
+        <div id="detailTags" style="margin-top:4px;display:flex;flex-wrap:wrap"></div>
+      </div>
+      <div class="pc-score" id="detailScore">—</div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab on" onclick="setTab('resumo')">Resumo</button>
+      <button class="tab" onclick="setTab('metas')">Metas</button>
+      <button class="tab" onclick="setTab('historico')">Historico</button>
+      <button class="tab" onclick="setTab('diario')">📷 Registros</button>
+    </div>
+
+    <!-- TAB: RESUMO -->
+    <div id="tabResumo">
+      <div class="grid2">
+        <div class="card c-water">
+          <div class="ci"><i class="ti ti-glass-full"></i><span class="unit">hoje</span></div>
+          <div class="bnum" id="dWater">—</div>
+          <div class="sub" id="dWaterMeta">meta — L</div>
+          <div class="bar"><div class="bar-f" id="dWaterBar" style="width:0%"></div></div>
+        </div>
+        <div class="card c-train">
+          <div class="ci"><i class="ti ti-barbell"></i><span class="unit">semana</span></div>
+          <div class="bnum" id="dTrain">—</div>
+          <div class="sub">treinos</div>
+          <div class="bar"><div class="bar-f" id="dTrainBar" style="width:0%"></div></div>
+        </div>
+        <div class="card c-diet">
+          <div class="ci"><i class="ti ti-checklist"></i><span class="unit">hoje</span></div>
+          <div class="bnum" id="dDiet">—%</div>
+          <div class="sub">dieta</div>
+          <div class="bar"><div class="bar-f" id="dDietBar" style="width:0%"></div></div>
+        </div>
+        <div class="card" style="border-color:var(--purple)">
+          <div class="ci"><i class="ti ti-mood-happy" style="color:var(--purple)"></i><span class="unit">hoje</span></div>
+          <div class="bnum" id="dFeel" style="font-size:16px;padding-top:4px">—</div>
+          <div class="sub">bem-estar</div>
+          <div class="bar"><div class="bar-f" style="width:100%;background:var(--purple)"></div></div>
+        </div>
+      </div>
+      <p class="sec-title">Dieta — média semanal</p>
+      <div class="diet-chart" id="detailDietChart"></div>
+      <p class="sec-title">Treinos desta semana</p>
+      <div id="detailTrains" style="font-size:13px;color:var(--dim);padding:4px 0"></div>
+      <p class="sec-title">Refeição livre hoje</p>
+      <div id="detailLivre" style="font-size:13px;color:var(--dim);padding:4px 0"></div>
+    </div>
+
+    <!-- TAB: METAS -->
+    <div id="tabMetas" class="hidden">
+
+      <!-- DADOS CADASTRAIS -->
+      <p class="sec-title">👤 Dados cadastrais</p>
+      <div class="goal-editor" style="margin-bottom:10px">
+        <div class="goal-row" style="flex-direction:column;align-items:flex-start;gap:6px">
+          <label style="font-size:12px;color:var(--dim)">Nome completo</label>
+          <input id="editName" type="text" style="width:100%;background:var(--surface2);border:1px solid var(--line);color:var(--bone);border-radius:8px;padding:9px 12px;font-size:14px;font-family:'Inter',sans-serif;outline:none">
+        </div>
+        <div class="goal-row" style="flex-direction:column;align-items:flex-start;gap:6px;margin-top:8px">
+          <label style="font-size:12px;color:var(--dim)">CPF (login do paciente)</label>
+          <input id="editCpf" type="text" readonly style="width:100%;background:var(--surface2);border:1px solid var(--line);color:var(--dim);border-radius:8px;padding:9px 12px;font-size:14px;font-family:'Inter',sans-serif;outline:none;cursor:default">
+        </div>
+        <div class="goal-row" style="flex-direction:column;align-items:flex-start;gap:6px;margin-top:8px">
+          <label style="font-size:12px;color:var(--dim)">WhatsApp (com 55 e DDD)</label>
+          <input id="editPhone" type="tel" placeholder="5511999990000" style="width:100%;background:var(--surface2);border:1px solid var(--line);color:var(--bone);border-radius:8px;padding:9px 12px;font-size:14px;font-family:'Inter',sans-serif;outline:none">
+        </div>
+      </div>
+
+      <!-- ETIQUETAS -->
+      <p class="sec-title">🏷️ Etiquetas</p>
+      <div class="goal-editor" style="margin-bottom:10px">
+        <div id="editTagsWrap" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px"></div>
+        <div style="display:flex;gap:6px">
+          <input id="editTagInput" type="text" placeholder="Nova etiqueta..." style="flex:1;background:var(--surface2);border:1px solid var(--line);color:var(--bone);border-radius:8px;padding:8px 10px;font-size:13px;font-family:'Inter',sans-serif;outline:none">
+          <button onclick="addEditTag()" style="background:var(--surface2);border:1px solid var(--line);color:var(--bone);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">+</button>
+        </div>
+      </div>
+      <button class="btn secondary" onclick="savePatientProfile()" style="margin-bottom:16px">Salvar dados cadastrais</button>
+
+      <!-- METAS DE TREINO/ÁGUA -->
+      <p class="sec-title">🎯 Metas de comportamento</p>
+      <div class="goal-editor">
+        <div class="goal-row">
+          <label>💧 Meta de água (litros/dia)</label>
+          <div class="num-ctrl">
+            <button onclick="adjGoal('water',-0.5)">−</button>
+            <span id="goalWaterVal">—</span>
+            <button onclick="adjGoal('water',0.5)">+</button>
+          </div>
+        </div>
+        <div class="goal-row">
+          <label>🏋️ Treinos por semana</label>
+          <div class="num-ctrl">
+            <button onclick="adjGoal('train',-1)">−</button>
+            <span id="goalTrainVal">—</span>
+            <button onclick="adjGoal('train',1)">+</button>
+          </div>
+        </div>
+      </div>
+      <button class="btn" onclick="saveGoals()">Salvar metas</button>
+    </div>
+
+    <!-- TAB: HISTÓRICO -->
+    <div id="tabHistorico" class="hidden">
+      <p class="sec-title">Últimos 7 dias</p>
+      <div class="hist-block" id="detailHist"></div>
+      <div class="legend">
+        <span><span class="dot w"></span>água</span>
+        <span><span class="dot t"></span>treino</span>
+        <span><span class="dot d"></span>dieta≥80%</span>
+        <span><span class="dot b"></span>bem-estar</span>
+      </div>
+      <p class="sec-title">Mês atual</p>
+      <div class="month-block">
+        <div class="month-grid" id="detailMonthGrid"></div>
+      </div>
+    </div>
+
+    <!-- TAB DIARIO NUTRI -->
+    <div id="tabDiario" class="hidden">
+      <p class="sec-title">📷 Diário alimentar</p>
+      <div id="nutriDiaryList" style="display:flex;flex-direction:column;gap:10px"></div>
+      <p class="sec-title" style="margin-top:20px">🍕 Refeições livres</p>
+      <div id="nutriLivreList" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+  </div>
+</div>
+
+<div id="loadingOverlay" style="display:none;position:fixed;inset:0;background:rgba(20,22,26,.85);z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:14px">
+  <div style="width:36px;height:36px;border:3px solid var(--line);border-top-color:var(--fuel);border-radius:50%;animation:spin .8s linear infinite"></div>
+  <div class="loading-msg" style="color:var(--bone);font-size:14px;font-weight:500">Carregando...</div>
+</div>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════
+const USERS = {
+  '11111111111': { pass:'0001', role:'patient', id:'ana',    name:'Ana Beatriz' },
+  '22222222222': { pass:'0002', role:'patient', id:'marcos', name:'Marcos Lima' },
+  '33333333333': { pass:'0003', role:'patient', id:'julia',  name:'Julia Ferraz' },
+  'yuri@nutri.com':   { pass:'nutri2024', role:'nutri', id:'yuri', name:'Yuri' },
+  'yuri@nutrimágico.com': { pass:'nutri2024', role:'nutri', id:'yuri', name:'Yuri' }
+};
+
+const PATIENTS_DB = {
+  ana:    { name:'Ana Beatriz',  phone:'5511991110001', tags:['Sao Paulo','Emagrecimento'] },
+  marcos: { name:'Marcos Lima',  phone:'5511992220002', tags:['Santos','Ganho de massa'] },
+  julia:  { name:'Julia Ferraz', phone:'5513993330003', tags:['Santos','Emagrecimento'] }
+};
+const PATIENT_IDS = Object.keys(PATIENTS_DB);
+const PATIENT_NAMES = {};
+Object.keys(PATIENTS_DB).forEach(function(k){ PATIENT_NAMES[k] = PATIENTS_DB[k].name; });
+var ALL_TAGS = ['Sao Paulo','Santos','Online','Emagrecimento','Ganho de massa','Manutencao','Performance'];
+var activeTagFilter = null;
+
+const DEFAULT_GOALS = { water: 2.5, train: 4 };
+
+const TRAIN_TYPES = [
+  'Arco e flecha','Atletismo / Pista e campo','Badminton','Barra fixa / Calistenia',
+  'Basquete','Biatlo','Bike de estrada','Bike indoor / Spinning',
+  'Bike MTB / Mountain bike','Bike de cascalho / Gravel','BMX',
+  'Bouldering / Boulder','Boxe','Caminhada outdoor','Caminhada indoor',
+  'Caminhada nordica','Canoagem','Ciclismo geral','Ciclismo ciclocross',
+  'Circuit training','Corrida outdoor','Corrida indoor / esteira',
+  'Corrida de trilha','Corrida de pista','Corrida de obstaculos','Corrida ultra',
+  'CrossFit','Curling','Danca','Danca social','Danca de salao',
+  'Duatlo','Escalada indoor','Escalada outdoor','Esgrima',
+  'Esqui alpino / Downhill','Esqui cross-country','Esqui de travessia',
+  'Esportes aquaticos','Esportes de disco','Esportes de neve',
+  'Esportes de raquete','Windsurfe / Kitesurf','Fitness gaming',
+  'Frisbee / Ultimate frisbee','Futebol campo','Futebol americano',
+  'Futebol australiano','Futebol indoor / Futsal','Funcional',
+  'Ginastica artistica','Ginastica ritmica','Golfe','Handebol',
+  'Hipismo / Equitacao','Hockey campo','Hockey indoor','HIIT',
+  'Ioga','Jiu-jitsu / BJJ','Judo','Jump rope / Corda','Karate',
+  'Kayak','Kickboxing','Lacrosse','Lutas / Artes marciais',
+  'Meditacao / Mindfulness','Montanhismo','Musculacao / Forca tradicional',
+  'Musculacao funcional','Natacao piscina','Natacao aguas abertas',
+  'Natacao + corrida / Swimrun','Orientacao','Padel',
+  'Patinacao inline / rollers','Patinacao no gelo outdoor','Patinacao no gelo indoor',
+  'Pesca','Pickleball','Pilates','Polo aquatico','Powerlifting',
+  'Remo outdoor','Remo indoor / ergometro','Remo stand-up SUP',
+  'Rugby','Skate','Snowboard','Snowshoe / Raquetes de neve','Softbol',
+  'Squash','Surf','Taekwondo','Tai chi','Tenis','Tenis de mesa / Pingue-pongue',
+  'Tiro ao alvo','Tiro com arco','EMOM / AMRAP','Triatlo',
+  'Trekking / Caminhada longa','Vela','Volei','Volei de praia',
+  'Wakeboard','Wrestling / Luta olimpica','Outro'
+];
+
+const FEELINGS = [
+  'Animado','Ansioso','Calmo','Cansado','Desmotivado',
+  'Estressado','Feliz','Focado','Indisposto','Normal','Realizado','Sonolento'
+];
+
+let currentUser = null;
+let state = {};       // keyed by patientId
+let goals = {};       // keyed by patientId
+let selectedPatient = null;
+let currentTab = 'resumo';
+
+// ══════════════════════════════════════════
+//  STORAGE
+// ══════════════════════════════════════════
+// [storage local removido]
+// [storage local removido]
+
+// ══════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════
+function todayKey() { return new Date().toISOString().slice(0,10); }
+function dkOffset(n) {
+  const d = new Date(); d.setDate(d.getDate()-n);
+  return d.toISOString().slice(0,10);
+}
+function dayLabel(n) {
+  const d = new Date(); d.setDate(d.getDate()-n);
+  return d.toLocaleDateString('pt-BR',{weekday:'short'}).replace('.','');
+}
+function emptyDay() {
+  return { water:0, trains:[], dietPct:null, livreFez:null, livreDesc:'', livreMotivo:'', feeling:null };
+}
+function getDay(pid, key) {
+  if (!state[pid]) state[pid] = { days:{} };
+  if (!state[pid].days[key]) state[pid].days[key] = emptyDay();
+  return state[pid].days[key];
+}
+function getGoals(pid) {
+  return goals[pid] || { ...DEFAULT_GOALS };
+}
+function currentWeekKeys() {
+  // Retorna as keys seg-dom da semana atual
+  var now = new Date();
+  var dow = now.getDay(); // 0=dom, 1=seg...
+  var diffToMon = (dow === 0) ? 6 : dow - 1; // dias desde segunda
+  var keys = [];
+  for (var i = 0; i < 7; i++) {
+    var d = new Date(now);
+    d.setDate(now.getDate() - diffToMon + i);
+    keys.push(d.toISOString().slice(0,10));
+  }
+  return keys;
+}
+function weekTrains(pid) {
+  var keys = currentWeekKeys();
+  var c = 0;
+  keys.forEach(function(key) {
+    var d = state[pid] && state[pid].days && state[pid].days[key];
+    if (d && d.trains && d.trains.length > 0) c++;
+  });
+  return c;
+}
+function streak(pid) {
+  let s=0;
+  for(let i=0;i<30;i++){
+    const d=state[pid]?.days[dkOffset(i)];
+    const g=getGoals(pid);
+    if(d && d.water>=g.water && (d.dietPct||0)>=100) s++;
+    else break;
+  }
+  return s;
+}
+function lastActivityDays(pid){
+  var s=state[pid];if(!s||!s.days)return 999;
+  var keys=Object.keys(s.days).filter(function(k){var d=s.days[k];return d&&(d.water>0||(d.trains||[]).length>0||d.dietPct!==null||d.feeling);}).sort();
+  if(!keys.length)return 999;
+  return Math.floor((new Date()-new Date(keys[keys.length-1]+'T12:00:00'))/86400000);
+}
+function dietBarColor(pct) {
+  if (pct === null || pct === undefined) return 'var(--olive)';
+  if (pct <= 40)  return '#E05252'; // vermelho
+  if (pct <= 69)  return '#E0B452'; // amarelo
+  return '#6AAF3D';                  // verde
+}
+
+function weekDietPct(pid) {
+  // Média de adesão à dieta na semana atual (seg-dom)
+  var keys = currentWeekKeys();
+  var total = 0, count = 0;
+  keys.forEach(function(key) {
+    var d = state[pid] && state[pid].days && state[pid].days[key];
+    if (d && d.dietPct !== null) { total += d.dietPct; count++; }
+  });
+  return count > 0 ? Math.round(total / count) : null;
+}
+
+function weekDietAvg(pid) {
+  const arr=[];
+  for(let i=6;i>=0;i--){
+    const d=state[pid]?.days[dkOffset(i)];
+    arr.push({ label:dayLabel(i), val: d?.dietPct ?? null });
+  }
+  return arr;
+}
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+// ══════════════════════════════════════════
+//  LOGIN / LOGOUT
+// ══════════════════════════════════════════
+// [substituído pelo supabase_layer]
+function logout() {
+  currentUser=null; selectedPatient=null;
+  hide('patientScreen'); hide('nutriScreen');
+  show('loginScreen');
+}
+function show(id){ document.getElementById(id).classList.remove('hidden') }
+function hide(id){ document.getElementById(id).classList.add('hidden') }
+
+// ══════════════════════════════════════════
+//  PATIENT INIT
+// ══════════════════════════════════════════
+// [substituído pelo supabase_layer]
+
+function buildTrainSelect() {
+  const sel = document.getElementById('trainTypeSel');
+  sel.innerHTML = '<option value="">Selecione o tipo de treino...</option>';
+  TRAIN_TYPES.forEach(t => {
+    const o=document.createElement('option'); o.value=t; o.textContent=t; sel.appendChild(o);
+  });
+}
+
+function buildPctBtns() {
+  const c = document.getElementById('pctBtns');
+  c.innerHTML='';
+  for(let v=0;v<=100;v+=10){
+    const b=document.createElement('button');
+    b.className='pct-btn'; b.textContent=v+'%'; b.dataset.v=v;
+    b.onclick=()=>setPct(parseInt(b.dataset.v));
+    c.appendChild(b);
+  }
+}
+
+function buildFeelBtns(pid) {
+  const c=document.getElementById('feelBtns'); c.innerHTML='';
+  const td=getDay(pid,todayKey());
+  FEELINGS.forEach(f=>{
+    const b=document.createElement('button');
+    b.className='feel-btn'+(td.feeling===f?' sel':'');
+    b.textContent=f;
+    b.onclick=()=>setFeeling(pid,f);
+    c.appendChild(b);
+  });
+}
+
+async function _renderPatientUI(pid) {
+  const td = getDay(pid, todayKey());
+  const g  = getGoals(pid);
+  const wPct = Math.min(100, Math.round((td.water/g.water)*100));
+  const wk   = weekTrains(pid);
+  const tkPct= Math.min(100, Math.round((wk/g.train)*100));
+  const dPct = td.dietPct ?? 0;
+
+  document.getElementById('pDate').textContent =
+    new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('pWaterNum').textContent = td.water.toFixed(1);
+  document.getElementById('pWaterGoal').textContent = g.water.toFixed(1);
+  document.getElementById('pWaterBar').style.width = wPct+'%';
+  document.getElementById('pTrainNum').textContent  = wk+'/'+g.train;
+  document.getElementById('pTrainBar').style.width  = tkPct+'%';
+  var wdp = weekDietPct(pid);
+  document.getElementById('pDietNum').textContent = wdp !== null ? wdp+'%' : '—%';
+  document.getElementById('pDietBar').style.width = (wdp !== null ? wdp : 0)+'%';
+  document.getElementById('pDietBar').style.background = dietBarColor(wdp);
+  document.getElementById('pStreak').textContent    = streak(pid);
+
+  // summary
+  const parts = [
+    '<b>'+wk+'/'+g.train+'</b> treinos',
+    '<b>'+wPct+'%</b> da meta de água',
+    wdp !== null ? '<b>'+wdp+'%</b> de adesão essa semana' : 'dieta não registrada essa semana'
+  ];
+  document.getElementById('pSummary').innerHTML = parts.join(' · ');
+
+  // treinos hoje
+  const trainLabels = (td.trains||[]).map(t => typeof t==='object' ? t.tipo+(t.cal?' ('+t.cal+' kcal)':'') : t);
+  document.getElementById('pTrainToday').textContent =
+    trainLabels.length ? trainLabels.join(', ') : 'Nenhum hoje';
+  renderTrainList(pid);
+
+  // pct buttons
+  document.querySelectorAll('.pct-btn').forEach(b=>{
+    b.classList.toggle('sel', parseInt(b.dataset.v)===td.dietPct);
+  });
+  document.getElementById('pDietPct').textContent = td.dietPct!==null ? td.dietPct+'%' : '—';
+  document.getElementById('pDietPct').style.color = dietBarColor(td.dietPct);
+
+  // livre
+  const livSimBtn = document.getElementById('livreSimBtn');
+  const livNaoBtn = document.getElementById('livreNaoBtn');
+  livSimBtn.classList.toggle('on', td.livreFez===true);
+  livNaoBtn.classList.toggle('on-fuel', td.livreFez===false);
+  document.getElementById('livreStatus').textContent =
+    td.livreFez===true ? (td.livreDesc||'sim — sem descrição') :
+    td.livreFez===false ? 'não fez hoje' : 'não registrado';
+  if(td.livreFez===true) {
+    show('livreExpand');
+    document.getElementById('livreText').value = td.livreDesc||'';
+    var motEl = document.getElementById('livreMotivo');
+    if (motEl) motEl.value = td.livreMotivo||'';
+  } else hide('livreExpand');
+  renderLivreHistory(pid);
+
+  // bem-estar
+  document.getElementById('humorStatus').textContent = (td.feeling ? (feelingEmoji(td.feeling)+' '+td.feeling) : 'não registrado');
+  buildFeelBtns(pid);
+
+  // histórico 7d
+  renderHist('histBlock', pid);
+
+  // gráfico dieta
+  renderDietChart('dietChart', weekDietAvg(pid));
+
+  // gráfico mensal
+  renderMonthGrid('monthGrid', pid);
+
+  const now = new Date();
+  document.getElementById('monthLabel').textContent =
+    now.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+}
+
+function renderTrainList(pid) {
+  const td  = getDay(pid, todayKey());
+  const c   = document.getElementById('trainList');
+  c.innerHTML='';
+  (td.trains||[]).forEach((t,i)=>{
+    const nome = typeof t === 'object' ? t.tipo : t;
+    const cal  = typeof t === 'object' && t.cal ? ' · '+t.cal+' kcal' : '';
+    const span=document.createElement('span');
+    span.className='train-tag';
+    span.innerHTML=nome+cal+' <button onclick="removeTrain(\''+pid+'\','+i+')" title="Remover">×</button>';
+    c.appendChild(span);
+  });
+}
+
+async function addWater(amt) {
+  const pid = currentUser.id;
+  const td  = getDay(pid, todayKey());
+  td.water  = Math.max(0, Math.round((td.water + amt)*10)/10);
+  showToast(amt>0 ? '+'+Math.abs(amt*1000).toFixed(0)+'ml registrado' : '-200ml removido');
+  await renderPatient(pid);
+}
+
+async function addTrain() {
+  const pid  = currentUser.id;
+  const sel  = document.getElementById('trainTypeSel');
+  const tipo = sel.value;
+  if(!tipo) { showToast('Selecione o tipo de treino'); return; }
+  const calInput = document.getElementById('trainCal');
+  const cal = calInput.value ? parseInt(calInput.value) : null;
+  const td = getDay(pid, todayKey());
+  if(!td.trains) td.trains=[];
+  td.trains.push({ tipo, cal });
+  sel.value=''; calInput.value='';
+  showToast('Treino registrado!');
+  await renderPatient(pid);
+}
+
+async function removeTrain(pid, idx) {
+  const td = getDay(pid, todayKey());
+  td.trains.splice(idx,1);
+  await renderPatient(pid);
+}
+
+async function setPct(v) {
+  const pid = currentUser.id;
+  const td  = getDay(pid, todayKey());
+  td.dietPct = v;
+  showToast(v+'% registrado');
+  await renderPatient(pid);
+}
+
+async function setLivre(v) {
+  const pid = currentUser.id;
+  const td  = getDay(pid, todayKey());
+  td.livreFez = v;
+  if(!v) { td.livreDesc=''; }
+  await renderPatient(pid);
+}
+
+async function saveLivreText() {
+  const pid = currentUser.id;
+  const td  = getDay(pid, todayKey());
+  td.livreDesc   = document.getElementById('livreText').value;
+  const motEl    = document.getElementById('livreMotivo');
+  td.livreMotivo = motEl ? motEl.value : '';
+  showToast('Salvo!');
+  await renderPatient(pid);
+}
+
+function renderLivreHistory(pid) {
+  const c = document.getElementById('livreHistory');
+  if (!c) return;
+  const s = state[pid];
+  if (!s) return;
+  const entries = [];
+  Object.keys(s.days).sort().reverse().forEach(function(key) {
+    var d = s.days[key];
+    if (d && d.livreFez === true && (d.livreDesc || d.livreMotivo)) {
+      entries.push({ key: key, desc: d.livreDesc, motivo: d.livreMotivo });
+    }
+  });
+  if (entries.length === 0) { c.innerHTML = ''; return; }
+  var out = '<p class="sec-title" style="margin-top:12px;margin-bottom:8px">Diario de refeicoes livres</p>';
+  entries.forEach(function(e) {
+    var dt = new Date(e.key + 'T12:00:00');
+    var label = dt.toLocaleDateString('pt-BR', { weekday:'short', day:'numeric', month:'short' });
+    var motTag = e.motivo ? '<span style="font-size:11px;color:var(--dim);background:var(--surface);border-radius:10px;padding:2px 8px">' + e.motivo + '</span>' : '';
+    var descLine = e.desc ? '<div style="color:var(--bone);margin-top:4px">' + e.desc + '</div>' : '<div style="color:var(--dim);margin-top:4px">sem descricao</div>';
+    out += '<div style="background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:6px;font-size:13px">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:var(--fuel)">' + label + '</span>' + motTag + '</div>' +
+      descLine + '</div>';
+  });
+  c.innerHTML = out;
+}
+
+async function setFeeling(pid, f) {
+  const td = getDay(pid, todayKey());
+  td.feeling = f;
+  showToast(f+' registrado!');
+  await renderPatient(pid);
+}
+
+function renderHist(elId, pid) {
+  var c = document.getElementById(elId);
+  if (!c) return;
+  c.innerHTML = '';
+  var g = getGoals(pid);
+  // Semana atual: segunda a domingo
+  var now = new Date();
+  var dow = now.getDay(); // 0=dom,1=seg...
+  var diffToMon = (dow === 0) ? 6 : dow - 1;
+  var DAY_NAMES = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+  for (var i = 0; i < 7; i++) {
+    var d2 = new Date(now);
+    d2.setDate(now.getDate() - diffToMon + i);
+    var key = d2.toISOString().slice(0,10);
+    var d   = (state[pid]&&state[pid].days&&state[pid].days[key]) || emptyDay();
+    var isFuture = d2 > now;
+    var isToday  = (key === todayKey());
+    var row = document.createElement('div');
+    row.className = 'hist-row';
+    if (isToday) row.style.cssText = 'background:var(--fuel-d);border-radius:8px;margin:0 -4px;padding:0 4px';
+    var dayLabel2 = DAY_NAMES[i] + (isToday ? ' (hoje)' : '');
+    var icons = '';
+    if (!isFuture) {
+      icons +=
+        (d.water>=g.water ? '<span class="hist-icon">💧</span>' : '<span class="hist-icon hist-off">💧</span>') +
+        ((d.trains||[]).length>0 ? '<span class="hist-icon">🔥</span>' : '<span class="hist-icon hist-off">🔥</span>') +
+        ((d.dietPct||0)>=80 ? '<span class="hist-icon">🥗</span>' : '<span class="hist-icon hist-off">🥗</span>') +
+        (d.livreFez===true ? '<span class="hist-icon">🍕</span>' : '') +
+        (d.feeling ? '<span class="hist-icon" title="'+d.feeling+'">'+feelingEmoji(d.feeling)+'</span>' : '');
+    } else {
+      icons = '<span style="font-size:11px;color:var(--dim)">—</span>';
+    }
+    row.innerHTML =
+      '<span class="day" style="width:60px;'+(isToday?'color:var(--fuel);font-weight:700':'')+'">'+dayLabel2+'</span>'+
+      '<div class="hist-dots">'+icons+'</div>';
+    c.appendChild(row);
+  }
+}
+
+function renderDietChart(elId, data) {
+  const c = document.getElementById(elId); c.innerHTML='';
+  const max = 100;
+  data.forEach(item=>{
+    const wrap = document.createElement('div'); wrap.className='diet-bar-wrap';
+    const pct  = item.val!==null ? item.val : 0;
+    const h    = Math.round((pct/max)*68);
+    wrap.innerHTML =
+      '<div class="db" style="height:'+(h||2)+'px;opacity:'+(item.val!==null?1:.2)+'"></div>'+
+      '<div class="dl">'+item.label+'</div>';
+    c.appendChild(wrap);
+  });
+}
+
+function renderMonthGrid(elId, pid) {
+  var c = document.getElementById(elId);
+  if (!c) return;
+  var now = new Date();
+  var g   = getGoals(pid);
+  var daysInMonth = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+  var firstDow    = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+  var offset      = (firstDow === 0) ? 6 : firstDow - 1; // seg=0
+  var html2 = '';
+  // Cabeçalho
+  ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'].forEach(function(d){
+    html2 += '<div style="font-size:9px;color:var(--dim);text-align:center;font-weight:700;padding-bottom:4px">'+d+'</div>';
+  });
+  // Células vazias de offset
+  for(var blank=0; blank<offset; blank++) html2 += '<div></div>';
+  // Dias
+  for(var d=1; d<=daysInMonth; d++){
+    var key = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    var day = state[pid]&&state[pid].days&&state[pid].days[key];
+    var isToday = (key===todayKey());
+    var icons = '';
+    if (day) {
+      if (day.water>=g.water)        icons += '<span style="font-size:9px" title="Água">💧</span>';
+      if ((day.trains||[]).length>0) icons += '<span style="font-size:9px" title="Treino">🔥</span>';
+      if ((day.dietPct||0)>=80)      icons += '<span style="font-size:9px" title="Dieta">🥗</span>';
+      if (day.livreFez===true)       icons += '<span style="font-size:9px" title="Refeição livre">🍕</span>';
+      if (day.feeling)               icons += '<span style="font-size:9px" title="'+day.feeling+'">'+feelingEmoji(day.feeling)+'</span>';
+    }
+    html2 +=
+      '<div class="month-cell" style="background:'+(isToday?'var(--fuel-d)':'')+';border-radius:6px;padding:2px 1px">' +
+        '<div class="day-num" style="'+(isToday?'color:var(--fuel);font-weight:700':'')+'">'+ d +'</div>'+
+        '<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:0px;line-height:1.1">'+icons+'</div>'+
+      '</div>';
+  }
+  c.innerHTML = html2;
+}
+
+// ══════════════════════════════════════════
+//  NUTRICIONISTA
+// ══════════════════════════════════════════
+// [substituído pelo supabase_layer]
+
+// ── HELPER: dias da semana com água batida
+function weekWaterDays(pid) {
+  var keys = currentWeekKeys();
+  var g = getGoals(pid);
+  var count = 0;
+  keys.forEach(function(key) {
+    var d = state[pid] && state[pid].days && state[pid].days[key];
+    if (d && d.water >= g.water) count++;
+  });
+  return count;
+}
+
+// ── HELPER: status do paciente
+// Verde:    treinos >= meta, água OK, dieta >= 75%
+// Vermelho: treinos < 2, água OK em < 4 dias (falhou em 3+), dieta <= 60%
+// Cinza:    sem dados há 8+ dias
+// Amarelo:  qualquer outra situação
+function patientStatus(pid) {
+  var dias = lastActivityDays(pid);
+  if (dias >= 8) return 'gray';
+  var g   = getGoals(pid);
+  var wk  = weekTrains(pid);
+  var wdp = weekDietPct(pid);
+  var wwd = weekWaterDays(pid); // dias que bateu a meta de água
+  var passedDays = currentWeekKeys().filter(function(k){
+    return new Date(k+'T12:00:00') <= new Date();
+  }).length;
+
+  // Verde: treinos >= meta E água batida na maioria dos dias E dieta >= 75%
+  if (wk >= g.train && wwd >= Math.ceil(passedDays * 0.7) && (wdp || 0) >= 75) return 'green';
+
+  // Vermelho: treinos < 2 E falhou água em 3+ dias E dieta <= 60%
+  var waterFailed = passedDays - wwd;
+  if (wk < 2 && waterFailed >= 3 && (wdp || 0) <= 60) return 'red';
+
+  // Amarelo: demais casos
+  return 'yellow';
+}
+
+function statusConfig(s) {
+  var map = {
+    green:  { color:'#5aa83a', label:'No caminho certo', border:'#5aa83a' },
+    yellow: { color:'#d4a017', label:'Atenção',           border:'#d4a017' },
+    red:    { color:'#c94040', label:'Em risco',           border:'#c94040' },
+    gray:   { color:'var(--dim)', label:'Sem registros',  border:'var(--line)' }
+  };
+  return map[s] || map.gray;
+}
+
+// ── MÉTRICAS DA CARTEIRA
+function carteiraSummary() {
+  var pids = Object.keys(PATIENTS_DB);
+  if (!pids.length) return { media:0, verde:0, alerta:0, inativos:0, quedas:[] };
+  var totalDiet = 0, countDiet = 0, verde = 0, alerta = 0, inativos = 0, quedas = [];
+  pids.forEach(function(pid) {
+    var st  = patientStatus(pid);
+    var wdp = weekDietPct(pid);
+    if (wdp !== null) { totalDiet += wdp; countDiet++; }
+    if (st === 'green')  verde++;
+    if (st === 'red')    alerta++;
+    if (st === 'gray')   inativos++;
+    // Queda brusca: comparar media semana atual vs anterior
+    var quedaBrusca = detectQueda(pid);
+    if (quedaBrusca) quedas.push({ pid: pid, queda: quedaBrusca });
+  });
+  return {
+    media: countDiet > 0 ? Math.round(totalDiet / countDiet) : null,
+    verde: verde,
+    alerta: alerta,
+    inativos: inativos,
+    quedas: quedas,
+    total: pids.length
+  };
+}
+
+function detectQueda(pid) {
+  // Média de dieta desta semana vs. últimos 7 dias anteriores
+  var now = new Date();
+  var dow = now.getDay();
+  var diffToMon = (dow === 0) ? 6 : dow - 1;
+  var prevTotal = 0, prevCount = 0;
+  for (var i = 1; i <= 7; i++) {
+    var d2 = new Date(now);
+    d2.setDate(now.getDate() - diffToMon - i);
+    var key = d2.toISOString().slice(0,10);
+    var d = state[pid] && state[pid].days && state[pid].days[key];
+    if (d && d.dietPct !== null) { prevTotal += d.dietPct; prevCount++; }
+  }
+  var wdp = weekDietPct(pid);
+  if (!prevCount || wdp === null) return null;
+  var prevMedia = Math.round(prevTotal / prevCount);
+  var queda = prevMedia - wdp;
+  return queda >= 20 ? queda : null;
+}
+
+// ── RENDER PAINEL NUTRI
+function buildNutriPanel() {
+  var listEl = document.getElementById('nutriList');
+  if (!listEl) return;
+
+  var summary = carteiraSummary();
+  var pids    = Object.keys(PATIENTS_DB);
+  var diasSemReg = pids.filter(function(p){ return lastActivityDays(p) >= 8; });
+  var contato = pids.filter(function(p){
+    var s = patientStatus(p);
+    return s === 'red' || s === 'gray' || summary.quedas.find(function(q){return q.pid===p;});
+  });
+
+  // ─ Métricas topo
+  var mediaColor = summary.media === null ? 'var(--dim)' : summary.media >= 75 ? '#5aa83a' : summary.media >= 50 ? '#d4a017' : '#c94040';
+  var metricasHtml =
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px">' +
+      metricCard('Adesão média da carteira',
+        summary.media !== null ? summary.media+'%' : '—',
+        'esta semana', mediaColor) +
+      metricCard('Na zona verde',
+        summary.verde+'/'+summary.total,
+        'treinos + água + dieta ≥75%', '#5aa83a') +
+      metricCard('Precisam de contato',
+        contato.length,
+        'em risco, inativos ou queda brusca', contato.length > 0 ? '#c94040' : '#5aa83a') +
+    '</div>';
+
+  // ─ Alertas
+  var alertasHtml = '';
+  if (contato.length > 0) {
+    alertasHtml = '<p style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);margin-bottom:8px">Ação necessária</p>';
+    contato.forEach(function(pid) {
+      var p = PATIENTS_DB[pid];
+      var dias = lastActivityDays(pid);
+      var wdp  = weekDietPct(pid);
+      var queda = detectQueda(pid);
+      var phone = p.phone || '';
+      var motivo = dias >= 8
+        ? dias+'d sem registrar'
+        : queda ? 'dieta caiu '+queda+' pts esta semana'
+        : 'treino + água + dieta abaixo do ideal';
+      var wdpStr = wdp !== null ? wdp+'% adesão' : 'sem dados';
+      var wppLink = phone
+        ? '<a href="https://wa.me/'+phone+'" target="_blank" style="display:inline-flex;align-items:center;gap:4px;background:#25D366;color:#fff;border:none;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;text-decoration:none;margin-top:6px"><i class="ti ti-brand-whatsapp" style="font-size:13px"></i> Chamar no WhatsApp</a>'
+        : '';
+      alertasHtml +=
+        '<div style="background:var(--surface);border-left:3px solid #c94040;border-radius:var(--r);padding:10px 14px;margin-bottom:8px">'+
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start">'+
+            '<div>'+
+              '<div style="font-size:13px;font-weight:600;color:var(--bone)">'+p.name+'</div>'+
+              '<div style="font-size:12px;color:#c94040;margin-top:2px">'+motivo+'</div>'+
+              '<div style="font-size:11px;color:var(--dim);margin-top:2px">'+wdpStr+'</div>'+
+              wppLink+
+            '</div>'+
+          '</div>'+
+        '</div>';
+    });
+    alertasHtml += '<div style="height:1px;background:var(--line);margin:14px 0"></div>';
+  }
+
+  // ─ Cabeçalho da lista
+  var headerHtml =
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'+
+      '<p class="sec-title" style="margin:0">Todos os pacientes</p>'+
+      '<button onclick="openNewPatient()" style="background:var(--fuel);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;font-family:\'Inter\',sans-serif;cursor:pointer">+ Novo</button>'+
+    '</div>'+
+    '<div class="filter-bar" id="filterBar"></div>';
+
+  listEl.innerHTML = metricasHtml + alertasHtml + headerHtml + '<div id="patientCards"></div>';
+  buildFilterBar();
+  renderPatientCards();
+}
+
+function metricCard(label, val, sub, color) {
+  return '<div style="background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px">'+
+    '<div style="font-size:11px;color:var(--dim);margin-bottom:6px">'+label+'</div>'+
+    '<div style="font-family:\'Archivo Black\',sans-serif;font-size:24px;color:'+(color||'var(--bone)')+'">'+val+'</div>'+
+    '<div style="font-size:10px;color:var(--dim);margin-top:3px">'+sub+'</div>'+
+  '</div>';
+}
+
+function buildFilterBar() {
+  var bar = document.getElementById('filterBar');
+  if (!bar) return;
+  var ts={};Object.keys(PATIENTS_DB).forEach(function(pid){(PATIENTS_DB[pid].tags||[]).forEach(function(t){ts[t]=1;});});
+  ALL_TAGS.forEach(function(t){ts[t]=1;});
+  var o='<button class="filter-chip'+(activeTagFilter===null?' on':'')+'" onclick="setTagFilter(null)">Todos</button>';
+  Object.keys(ts).sort().forEach(function(t){o+='<button class="filter-chip'+(activeTagFilter===t?' on':'')+'" onclick="setTagFilter(\''+t+'\')">'+t+'</button>';});
+  bar.innerHTML=o;
+}
+
+function setTagFilter(t){activeTagFilter=t;buildFilterBar();renderPatientCards();}
+
+function renderPatientCards(){
+  var c=document.getElementById('patientCards');if(!c)return;c.innerHTML='';
+  var pids=Object.keys(PATIENTS_DB);
+  if(activeTagFilter)pids=pids.filter(function(p){return(PATIENTS_DB[p].tags||[]).indexOf(activeTagFilter)>=0;});
+  // Ordenar: vermelho → amarelo → cinza → verde, depois alfabético
+  var order = { red:0, gray:1, yellow:2, green:3 };
+  pids.sort(function(a,b){
+    var sa=patientStatus(a), sb=patientStatus(b);
+    if(order[sa]!==order[sb]) return order[sa]-order[sb];
+    return PATIENTS_DB[a].name.localeCompare(PATIENTS_DB[b].name,'pt-BR');
+  });
+  if(!pids.length){c.innerHTML='<div style="color:var(--dim);font-size:13px;padding:16px 0;text-align:center">Nenhum paciente com essa etiqueta.</div>';return;}
+  pids.forEach(function(pid){
+    var g   = getGoals(pid);
+    var wk  = weekTrains(pid);
+    var wdp = weekDietPct(pid);
+    var wwd = weekWaterDays(pid);
+    var dias= lastActivityDays(pid);
+    var st  = patientStatus(pid);
+    var sc  = statusConfig(st);
+    var p   = PATIENTS_DB[pid];
+    var phone = p.phone||'';
+    var card=document.createElement('div'); card.className='patient-card';
+    card.style.borderLeft='3px solid '+sc.border;
+    var tg=(p.tags||[]).map(function(t){return '<span class="tag-pill">'+t+'</span>';}).join('');
+    var wp=phone?'<a href="https://wa.me/'+phone+'" target="_blank" class="wpp-sm" onclick="event.stopPropagation()"><i class="ti ti-brand-whatsapp"></i></a>':'';
+    var dietColor = wdp===null?'var(--dim)':wdp>=75?'#5aa83a':wdp>=41?'#d4a017':'#c94040';
+    var metaInfo = st==='gray'
+      ? '<span style="font-size:12px;color:var(--dim)">'+dias+'d sem registros</span>'
+      : '<span style="font-size:12px;color:var(--dim)">'+
+          '💧'+wwd+'/7d &nbsp;🏋️'+wk+'/'+g.train+' &nbsp;🥗<span style="color:'+dietColor+'">'+(wdp!==null?wdp+'%':'—')+'</span>'+
+        '</span>';
+    card.innerHTML=
+      '<div class="pc-row">'+
+        '<div style="flex:1;min-width:0">'+
+          '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'+
+            '<span style="width:9px;height:9px;border-radius:50%;background:'+sc.color+';flex-shrink:0;display:inline-block"></span>'+
+            '<span class="pc-name">'+p.name+'</span>'+
+            '<span style="font-size:11px;color:'+sc.color+';font-weight:600">'+sc.label+'</span>'+
+          '</div>'+
+          metaInfo+
+          (tg?'<div style="margin-top:5px">'+tg+'</div>':'')+
+        '</div>'+
+        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;padding-left:8px">'+wp+'</div>'+
+      '</div>';
+    card.onclick=function(){openPatient(pid);};
+    c.appendChild(card);
+  });
+}
+
+function showNutriList(){show('nutriList');hide('nutriDetail');buildNutriPanel();}
+
+
+
+async function openPatient(pid) {
+  selectedPatient = pid;
+  hide('nutriList'); show('nutriDetail');
+  const g  = getGoals(pid);
+  const td = state[pid]?.days[todayKey()] || emptyDay();
+  const wk = weekTrains(pid);
+  const wPct = Math.min(100, Math.round((td.water/g.water)*100));
+  const tkPct= Math.min(100, Math.round((wk/g.train)*100));
+  const dPct = td.dietPct??0;
+
+  document.getElementById('detailName').textContent=(PATIENTS_DB[pid]&&PATIENTS_DB[pid].name)||pid;
+  document.getElementById('detailScore').textContent=streak(pid)+'🔥';
+  (function(){var b=document.getElementById('detailWppBtn');if(b){var ph=(PATIENTS_DB[pid]&&PATIENTS_DB[pid].phone)||'';b.href=ph?'https://wa.me/'+ph:'#';b.style.opacity=ph?'1':'0.4';}})();
+  (function(){var d=document.getElementById('detailTags');if(d){var t=(PATIENTS_DB[pid]&&PATIENTS_DB[pid].tags)||[];d.innerHTML=t.map(function(x){return '<span class="tag-pill">'+x+'</span>';}).join('');}})();
+  document.getElementById('dWater').textContent      = td.water.toFixed(1)+'L';
+  document.getElementById('dWaterMeta').textContent  = 'meta '+g.water.toFixed(1)+' L';
+  document.getElementById('dWaterBar').style.width   = wPct+'%';
+  document.getElementById('dTrain').textContent      = wk+'/'+g.train;
+  document.getElementById('dTrainBar').style.width   = tkPct+'%';
+  document.getElementById('dDiet').textContent       = td.dietPct!==null ? td.dietPct+'%' : '—%';
+  document.getElementById('dDietBar').style.width    = dPct+'%';
+  document.getElementById('dFeel').textContent       = td.feeling||'—';
+
+  // treinos
+  const tr = (td.trains||[]);
+  const trLabels = tr.map(t => typeof t==='object' ? t.tipo+(t.cal?' ('+t.cal+' kcal)':'') : t);
+  document.getElementById('detailTrains').textContent =
+    trLabels.length ? trLabels.join(' · ') : 'Nenhum treino registrado hoje';
+
+  // livre
+  const lv = document.getElementById('detailLivre');
+  if(td.livreFez===true) lv.textContent = td.livreDesc||'Sim (sem descrição)';
+  else if(td.livreFez===false) lv.textContent = 'Não fez refeição livre';
+  else lv.textContent = 'Não registrado';
+
+  // gráfico dieta
+  renderDietChart('detailDietChart', weekDietAvg(pid));
+
+  // metas
+  document.getElementById('goalWaterVal').textContent = g.water.toFixed(1);
+  document.getElementById('goalTrainVal').textContent = g.train;
+
+  // histórico
+  renderHist('detailHist', pid);
+  renderMonthGrid('detailMonthGrid', pid);
+
+  setTab('resumo');
+  renderNutriDiary(pid);
+}
+
+function setTab(t) {
+  currentTab=t;
+  ['resumo','metas','historico','diario'].forEach(n=>{
+    const tab=document.getElementById('tab'+n.charAt(0).toUpperCase()+n.slice(1));
+    if(tab) t===n ? tab.classList.remove('hidden') : tab.classList.add('hidden');
+  });
+  document.querySelectorAll('.tab').forEach((btn,i)=>{
+    const names=['resumo','metas','historico','diario'];
+    btn.classList.toggle('on', names[i]===t);
+  });
+}
+
+async function adjGoal(type, delta) {
+  const pid = selectedPatient;
+  if(!goals[pid]) goals[pid]={...DEFAULT_GOALS};
+  if(type==='water') {
+    goals[pid].water = Math.max(0.5, Math.round((goals[pid].water+delta)*10)/10);
+    document.getElementById('goalWaterVal').textContent = goals[pid].water.toFixed(1);
+  } else {
+    goals[pid].train = Math.max(1, Math.min(7, goals[pid].train+delta));
+    document.getElementById('goalTrainVal').textContent = goals[pid].train;
+  }
+}
+
+// [substituído pelo supabase_layer]
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+
+
+// DIARIO ALIMENTAR
+var diaryPhotoData = null;
+
+function initDiaryPhoto() {
+  // Binding feito por openDiaryCamera/openDiaryGallery via bindDiaryInput
+}
+function openDiaryCamera() {
+  var el = document.getElementById('diaryPhotoCamera');
+  if (!el) return;
+  bindDiaryInput(el);
+  el.value = '';
+  el.click();
+}
+function openDiaryGallery() {
+  var el = document.getElementById('diaryPhoto');
+  if (!el) return;
+  bindDiaryInput(el);
+  el.value = '';
+  el.click();
+}
+function bindDiaryInput(el) {
+  if (el._bound) return;
+  el._bound = true;
+  el.addEventListener('change', function() {
+    var file = this.files[0];
+    if (!file) return;
+    // Verificar tamanho (max 5MB para storage)
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Imagem muito grande. Use uma menor que 5MB.');
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      diaryPhotoData = ev.target.result;
+      document.getElementById('diaryPhotoImg').src = diaryPhotoData;
+      document.getElementById('diaryPhotoPreview').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function removeDiaryPhoto() {
+  diaryPhotoData = null;
+  document.getElementById('diaryPhotoImg').src = '';
+  document.getElementById('diaryPhotoPreview').style.display = 'none';
+  document.getElementById('diaryPhoto').value = '';
+  document.getElementById('diaryPhotoCamera').value = '';
+}
+
+// [substituído pelo supabase_layer]
+
+function renderDiaryList(pid) {
+  var c = document.getElementById('diaryList');
+  if (!c) return;
+  var entries = (state[pid] && state[pid].diary) ? state[pid].diary : [];
+  if (entries.length === 0) {
+    c.innerHTML = '<div style="text-align:center;color:var(--dim);font-size:13px;padding:24px 0">Nenhuma refeicao registrada ainda.</div>';
+    return;
+  }
+  var byDate = {};
+  entries.forEach(function(e) {
+    if (!byDate[e.date]) byDate[e.date] = [];
+    byDate[e.date].push(e);
+  });
+  var out = '';
+  Object.keys(byDate).sort().reverse().forEach(function(date) {
+    var dt = new Date(date + 'T12:00:00');
+    var label = dt.toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long' });
+    out += '<div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin:12px 0 6px">' + label + '</div>';
+    byDate[date].forEach(function(e) {
+      var photoHtml = e.photo ? '<img src="' + e.photo + '" style="width:100%;max-height:180px;object-fit:cover;display:block;border-radius:8px 8px 0 0">' : '';
+      out += '<div class="diary-entry">' + photoHtml +
+        '<div class="de-body"><div style="display:flex;justify-content:space-between;align-items:flex-start">' +
+        '<span class="de-meal">' + e.meal + '</span><span class="de-time">' + e.time + '</span></div>' +
+        (e.desc ? '<div class="de-desc">' + e.desc + '</div>' : '') +
+        '<button class="de-del" onclick="deleteDiaryEntry(\'' + pid + '\',' + e.id + ')">remover</button>' +
+        '</div></div>';
+    });
+  });
+  c.innerHTML = out;
+}
+
+// [substituído pelo supabase_layer]
+
+function setPView(view) {
+  var isDiary = (view === 'diary');
+  var viewDaily = document.getElementById('viewDaily');
+  var viewDiary = document.getElementById('viewDiary');
+  var pNavTabs  = document.getElementById('pNavTabs');
+  // mostrar apenas a view correta
+  if (viewDaily) viewDaily.style.display = isDiary ? 'none' : '';
+  if (viewDiary) viewDiary.style.display = isDiary ? '' : 'none';
+  document.getElementById('pnavDaily').style.background = isDiary ? 'transparent' : 'var(--fuel)';
+  document.getElementById('pnavDaily').style.color      = isDiary ? 'var(--dim)' : '#fff';
+  document.getElementById('pnavDiary').style.background = isDiary ? 'var(--fuel)' : 'transparent';
+  document.getElementById('pnavDiary').style.color      = isDiary ? '#fff' : 'var(--dim)';
+  if (isDiary) { initDiaryPhoto(); renderDiaryList(currentUser.id); }
+}
+
+function renderNutriDiary(pid) {
+  var dl = document.getElementById('nutriDiaryList');
+  if (dl) {
+    var entries = (state[pid] && state[pid].diary) ? state[pid].diary : [];
+    if (entries.length === 0) {
+      dl.innerHTML = '<div style="color:var(--dim);font-size:13px;padding:16px 0;text-align:center">Nenhum registro alimentar ainda.</div>';
+    } else {
+      // Agrupar por data
+      var byDate = {};
+      entries.forEach(function(e) { if(!byDate[e.date]) byDate[e.date]=[]; byDate[e.date].push(e); });
+      var out = '';
+      Object.keys(byDate).sort().reverse().forEach(function(date) {
+        var dt = new Date(date+'T12:00:00');
+        var label = dt.toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'});
+        out += '<div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin:10px 0 6px;padding-left:2px">'+label+'</div>';
+        byDate[date].forEach(function(e) {
+          var photoHtml = e.photo
+            ? '<img src="'+e.photo+'" style="width:100%;max-height:200px;object-fit:cover;display:block;border-radius:10px 10px 0 0">'
+            : '';
+          out += '<div class="diary-entry" style="border-radius:10px">'+photoHtml+
+            '<div class="de-body">'+
+              '<div style="display:flex;justify-content:space-between;align-items:center">'+
+                '<span class="de-meal">'+e.meal+'</span>'+
+                '<span class="de-time">'+e.time+'</span>'+
+              '</div>'+
+              (e.desc ? '<div class="de-desc" style="margin-top:6px">'+e.desc+'</div>' : '')+
+            '</div></div>';
+        });
+      });
+      dl.innerHTML = out;
+    }
+  }
+  var ll = document.getElementById('nutriLivreList');
+  if (ll) {
+    var s = state[pid];
+    var livreEntries = [];
+    if (s && s.days) {
+      Object.keys(s.days).sort().reverse().forEach(function(key) {
+        var d = s.days[key];
+        if (d && d.livreFez === true) livreEntries.push({ key:key, desc:d.livreDesc, motivo:d.livreMotivo });
+      });
+    }
+    if (livreEntries.length === 0) {
+      ll.innerHTML = '<div style="color:var(--dim);font-size:13px;padding:8px 0">Nenhuma refeicao livre.</div>';
+    } else {
+      var out = '';
+      livreEntries.forEach(function(e) {
+        var dt = new Date(e.key + 'T12:00:00');
+        var label = dt.toLocaleDateString('pt-BR', { weekday:'short', day:'numeric', month:'short' });
+        var motTag = e.motivo ? '<span style="font-size:11px;color:var(--dim);background:var(--surface2);border-radius:10px;padding:2px 8px">' + e.motivo + '</span>' : '';
+        out += '<div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13px">'+
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'+
+            '<span style="font-weight:600;color:var(--fuel)">'+label+'</span>'+
+            motTag+
+          '</div>'+
+          (e.desc
+            ? '<div style="color:var(--bone);line-height:1.5">'+e.desc+'</div>'
+            : '<div style="color:var(--dim);font-style:italic">sem descrição</div>')+
+        '</div>';
+      });
+      ll.innerHTML = out;
+    }
+  }
+}
+
+var npTags=[];
+function openNewPatient(){
+  document.getElementById('npName').value='';
+  document.getElementById('npEmail').value='';
+  document.getElementById('npPass').value='1234';
+  document.getElementById('npPhone').value='';
+  document.getElementById('npTagInput').value='';
+  npTags=[];renderNpTags();
+  document.getElementById('newPatientModal').style.display='flex';
+}
+function closeNewPatient(){document.getElementById('newPatientModal').style.display='none';}
+function renderNpTags(){
+  var w=document.getElementById('npTagsWrap');if(!w)return;
+  var sel=npTags.map(function(t,i){
+    return '<span class="tag-pill">'+t+' <button onclick="removeNpTag('+i+')" style="background:none;border:none;color:inherit;cursor:pointer;font-size:13px">x</button></span>';
+  }).join('');
+  var sug=ALL_TAGS.filter(function(t){return npTags.indexOf(t)<0;}).map(function(t){
+    return '<button onclick="addNpTagVal(\''+t+'\')" style="background:var(--surface2);border:1px dashed var(--line);color:var(--dim);border-radius:8px;padding:4px 8px;font-size:11px;cursor:pointer;font-family:Inter,sans-serif;margin:2px">+'+t+'</button>';
+  }).join('');
+  w.innerHTML=sel+sug;
+}
+function addNpTag(){
+  var v=document.getElementById('npTagInput').value.trim();
+  if(v&&npTags.indexOf(v)<0){npTags.push(v);if(ALL_TAGS.indexOf(v)<0)ALL_TAGS.push(v);}
+  document.getElementById('npTagInput').value='';renderNpTags();
+}
+function addNpTagVal(t){if(npTags.indexOf(t)<0)npTags.push(t);renderNpTags();}
+function removeNpTag(i){npTags.splice(i,1);renderNpTags();}
+// [substituído pelo supabase_layer]
+// [substituído pelo supabase_layer]
+
+// ── EDIÇÃO DE PERFIL DO PACIENTE ──
+var editTags = [];
+
+function populateEditProfile(pid) {
+  var p = PATIENTS_DB[pid];
+  if (!p) return;
+  var nameEl  = document.getElementById('editName');
+  var phoneEl = document.getElementById('editPhone');
+  var cpfEl   = document.getElementById('editCpf');
+  if (nameEl)  nameEl.value  = p.name  || '';
+  if (phoneEl) phoneEl.value = p.phone || '';
+  if (cpfEl)   cpfEl.value   = p.cpf   || '(não cadastrado)';
+  editTags = (p.tags || []).slice();
+  renderEditTags(pid);
+}
+
+function renderEditTags(pid) {
+  var wrap = document.getElementById('editTagsWrap');
+  if (!wrap) return;
+  var pid2 = pid || selectedPatient;
+  // Tags atuais com botão de remover
+  var currentHtml = editTags.map(function(t, i) {
+    return '<span class="tag-pill-edit">' + t +
+      '<button class="edit-tag-del" onclick="removeEditTag(' + i + ')" title="Remover">×</button></span>';
+  }).join('');
+  // Sugestões: tags disponíveis que ainda não estão selecionadas
+  var available = ALL_TAGS.filter(function(t) { return editTags.indexOf(t) < 0; });
+  var sugHtml = available.map(function(t) {
+    return '<button onclick="addEditTagVal(\'' + t + '\')" style="background:var(--surface2);border:1px dashed var(--line);color:var(--dim);border-radius:8px;padding:4px 9px;font-size:11px;cursor:pointer;font-family:Inter,sans-serif;margin:2px">+ ' + t + '</button>';
+  }).join('');
+  wrap.innerHTML = currentHtml + (available.length ? '<div style="margin-top:8px;border-top:1px solid var(--line);padding-top:8px">' + sugHtml + '</div>' : '');
+}
+
+function addEditTag() {
+  var inp = document.getElementById('editTagInput');
+  if (!inp) return;
+  var v = inp.value.trim();
+  if (v && editTags.indexOf(v) < 0) {
+    editTags.push(v);
+    if (ALL_TAGS.indexOf(v) < 0) ALL_TAGS.push(v);
+  }
+  inp.value = '';
+  renderEditTags();
+}
+
+function addEditTagVal(t) {
+  if (editTags.indexOf(t) < 0) editTags.push(t);
+  renderEditTags();
+}
+
+function removeEditTag(i) {
+  editTags.splice(i, 1);
+  renderEditTags();
+}
+
+// [substituído pelo supabase_layer]
+
+// ═══════════════════════════════════════════
+//  SUPABASE CONFIG
+// ═══════════════════════════════════════════
+const SB_URL = 'https://ymqbrplzrvdooofunswj.supabase.co/rest/v1';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltcWJycGx6cnZkb29vZnVuc3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkwNDM0NzcsImV4cCI6MjEwNDYxOTQ3N30.M9rwyLxZGqLQyXsr9ut_XvYao4aQD_t1FRuo8vDKwpA';
+const SB_HEADERS = {
+  'apikey': SB_KEY,
+  'Authorization': 'Bearer ' + SB_KEY,
+  'Content-Type': 'application/json',
+  'Prefer': 'return=representation'
+};
+
+// ─ GET
+async function sbGet(table, query) {
+  var url = SB_URL + '/' + table + (query ? '?' + query : '');
+  var r = await fetch(url, { headers: SB_HEADERS });
+  if (!r.ok) { console.error('sbGet', table, r.status, await r.text()); return []; }
+  return r.json();
+}
+
+// ─ UPSERT (insert or update)
+async function sbUpsert(table, data, onConflict) {
+  var url = SB_URL + '/' + table + (onConflict ? '?on_conflict=' + onConflict : '');
+  var r = await fetch(url, {
+    method: 'POST',
+    headers: Object.assign({}, SB_HEADERS, { 'Prefer': 'resolution=merge-duplicates,return=representation' }),
+    body: JSON.stringify(Array.isArray(data) ? data : [data])
+  });
+  if (!r.ok) { console.error('sbUpsert', table, r.status, await r.text()); return null; }
+  return r.json();
+}
+
+// ─ DELETE
+async function sbDelete(table, query) {
+  var url = SB_URL + '/' + table + '?' + query;
+  var r = await fetch(url, { method: 'DELETE', headers: SB_HEADERS });
+  if (!r.ok) { console.error('sbDelete', table, r.status); }
+}
+
+// ═══════════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════════
+async function doLogin() {
+  var raw = document.getElementById('loginEmail').value.trim();
+  var cpf = raw.replace(/[.\-\s]/g, '');
+  var pw  = document.getElementById('loginPass').value.trim();
+  var err = document.getElementById('loginErr');
+
+  // Verificar nutricionista — aceita tanto CPF quanto e-mail
+  var nutriQuery = cpf ? 'cpf_login=eq.'+cpf : 'cpf_login=eq.'+encodeURIComponent(raw);
+  var nutri = await sbGet('nutricionista', nutriQuery+'&select=*');
+  // Tentar também pelo campo cpf direto
+  if (!nutri.length && cpf) {
+    nutri = await sbGet('nutricionista', 'cpf=eq.'+cpf+'&select=*');
+  }
+  if (nutri.length && nutri[0].senha === pw) {
+    currentUser = { id:'yuri', role:'nutri', name: nutri[0].nome };
+    hide('loginScreen');
+    show('nutriScreen');
+    await initNutri();
+    return;
+  }
+  // Verificar paciente por CPF
+  var pacs = await sbGet('pacientes', 'cpf=eq.' + cpf + '&select=*');
+  if (pacs.length) {
+    var p = pacs[0];
+    var expectedPass = p.phone ? p.phone.slice(-4) : '';
+    if (pw === expectedPass) {
+      currentUser = { id: p.id, role:'patient', name: p.nome };
+      hide('loginScreen');
+      await initPatient(p.id);
+      return;
+    }
+  }
+  err.classList.remove('hidden');
+}
+
+// ═══════════════════════════════════════════
+//  PACIENTES
+// ═══════════════════════════════════════════
+async function loadAllPacientes() {
+  var rows = await sbGet('pacientes', 'select=*&order=nome');
+  PATIENTS_DB = {};
+  rows.forEach(function(p) {
+    PATIENTS_DB[p.id] = { name: p.nome, phone: p.phone, cpf: p.cpf, tags: p.tags || [] };
+    PATIENT_NAMES[p.id] = p.nome;
+    if (PATIENT_IDS.indexOf(p.id) < 0) PATIENT_IDS.push(p.id);
+    // Metas
+    goals[p.id] = { water: parseFloat(p.meta_agua) || 2.5, train: p.meta_treinos || 4 };
+  });
+}
+
+async function saveNewPatient() {
+  var name  = document.getElementById('npName').value.trim();
+  var cpf   = document.getElementById('npEmail').value.trim().replace(/[.\-\s]/g, '');
+  var phone = document.getElementById('npPhone').value.trim().replace(/\D/g, '');
+  if (!name || !cpf) { showToast('Nome e CPF são obrigatórios'); return; }
+  if (cpf.length !== 11) { showToast('CPF deve ter 11 dígitos'); return; }
+  if (phone.length < 4) { showToast('WhatsApp necessário para gerar a senha'); return; }
+  var pass = phone.slice(-4);
+  var id   = 'p_' + cpf;
+  var row  = { id: id, cpf: cpf, nome: name, phone: phone, tags: npTags.slice(), meta_agua: 2.5, meta_treinos: 4 };
+  var res  = await sbUpsert('pacientes', row, 'id');
+  if (!res) { showToast('Erro ao cadastrar. Tente novamente.'); return; }
+  PATIENTS_DB[id] = { name: name, phone: phone, cpf: cpf, tags: npTags.slice() };
+  PATIENT_NAMES[id] = name;
+  if (PATIENT_IDS.indexOf(id) < 0) PATIENT_IDS.push(id);
+  goals[id] = { water: 2.5, train: 4 };
+  state[id] = { days: {} };
+  closeNewPatient();
+  buildNutriPanel();
+  showToast(name + ' cadastrado! Senha: ' + pass);
+}
+
+async function savePatientProfile() {
+  var pid   = selectedPatient;
+  if (!pid || !PATIENTS_DB[pid]) return;
+  var name  = (document.getElementById('editName').value || '').trim();
+  var phone = (document.getElementById('editPhone').value || '').trim().replace(/\D/g, '');
+  var tags  = editTags.slice();
+  if (!name) { showToast('Nome não pode ficar vazio'); return; }
+  var res = await sbUpsert('pacientes', { id: pid, cpf: PATIENTS_DB[pid].cpf, nome: name, phone: phone, tags: tags }, 'id');
+  if (!res) { showToast('Erro ao salvar'); return; }
+  PATIENTS_DB[pid].name  = name;
+  PATIENTS_DB[pid].phone = phone;
+  PATIENTS_DB[pid].tags  = tags;
+  PATIENT_NAMES[pid]     = name;
+  document.getElementById('detailName').textContent = name;
+  var dtags = document.getElementById('detailTags');
+  if (dtags) dtags.innerHTML = tags.map(function(t){ return '<span class="tag-pill">'+t+'</span>'; }).join('');
+  var wppBtn = document.getElementById('detailWppBtn');
+  if (wppBtn) { wppBtn.href = phone ? 'https://wa.me/'+phone : '#'; wppBtn.style.opacity = phone?'1':'0.4'; }
+  showToast('Perfil atualizado!');
+}
+
+async function saveGoals() {
+  var pid = selectedPatient;
+  var g   = goals[pid];
+  if (!pid || !g) return;
+  await sbUpsert('pacientes', { id: pid, cpf: PATIENTS_DB[pid].cpf, nome: PATIENTS_DB[pid].name, meta_agua: g.water, meta_treinos: g.train }, 'id');
+  showToast('Metas salvas!');
+}
+
+// ═══════════════════════════════════════════
+//  REGISTROS DIÁRIOS
+// ═══════════════════════════════════════════
+async function loadRegistros(pid) {
+  var rows = await sbGet('registros', 'paciente_id=eq.' + pid + '&select=*&order=data');
+  if (!state[pid]) state[pid] = { days: {} };
+  rows.forEach(function(r) {
+    state[pid].days[r.data] = {
+      water:        parseFloat(r.agua) || 0,
+      trains:       r.treinos || [],
+      dietPct:      r.diet_pct,
+      livreFez:     r.livre_fez,
+      livreDesc:    r.livre_desc || '',
+      livreMotivo:  r.livre_motivo || '',
+      feeling:      r.feeling || null
+    };
+  });
+}
+
+async function saveRegistro(pid, dateKey) {
+  var d = state[pid] && state[pid].days && state[pid].days[dateKey];
+  if (!d) return;
+  await sbUpsert('registros', {
+    paciente_id:  pid,
+    data:         dateKey,
+    agua:         d.water,
+    treinos:      d.trains || [],
+    diet_pct:     d.dietPct,
+    livre_fez:    d.livreFez,
+    livre_desc:   d.livreDesc,
+    livre_motivo: d.livreMotivo,
+    feeling:      d.feeling
+  }, 'paciente_id,data');
+}
+
+// ═══════════════════════════════════════════
+//  DIÁRIO ALIMENTAR
+// ═══════════════════════════════════════════
+async function loadDiario(pid) {
+  var rows = await sbGet('diario_alimentar', 'paciente_id=eq.' + pid + '&select=*&order=criado_em.desc');
+  if (!state[pid]) state[pid] = { days: {} };
+  state[pid].diary = rows.map(function(r) {
+    return { id: r.id, date: r.data, time: r.hora, meal: r.refeicao, desc: r.descricao, photo: r.foto_base64 };
+  });
+}
+
+async function addDiaryEntry() {
+  var pid  = currentUser.id;
+  var meal = document.getElementById('diaryMeal').value;
+  var desc = document.getElementById('diaryDesc').value.trim();
+  if (!meal && !desc && !diaryPhotoData) { showToast('Adicione ao menos uma informação'); return; }
+  var now  = new Date();
+  var entry = {
+    paciente_id: pid,
+    data:        now.toISOString().slice(0,10),
+    hora:        now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+    refeicao:    meal || 'Refeição',
+    descricao:   desc,
+    foto_base64: diaryPhotoData
+  };
+  var res = await sbUpsert('diario_alimentar', entry, null);
+  if (!res) { showToast('Erro ao salvar. Tente novamente.'); return; }
+  // Atualizar state local
+  if (!state[pid]) state[pid] = { days:{} };
+  if (!state[pid].diary) state[pid].diary = [];
+  state[pid].diary.unshift({ id: res[0].id, date: entry.data, time: entry.hora, meal: entry.refeicao, desc: entry.descricao, photo: entry.foto_base64 });
+  // Reset form
+  document.getElementById('diaryMeal').value = '';
+  document.getElementById('diaryDesc').value = '';
+  document.getElementById('diaryPhoto').value = '';
+  var camEl = document.getElementById('diaryPhotoCamera');
+  if (camEl) camEl.value = '';
+  document.getElementById('diaryPhotoPreview').style.display = 'none';
+  diaryPhotoData = null;
+  renderDiaryList(pid);
+  showToast('Refeição registrada!');
+}
+
+async function deleteDiaryEntry(pid, id) {
+  await sbDelete('diario_alimentar', 'id=eq.' + id);
+  if (state[pid] && state[pid].diary) {
+    state[pid].diary = state[pid].diary.filter(function(e){ return e.id !== id; });
+  }
+  renderDiaryList(pid);
+  showToast('Entrada removida');
+}
+
+// ═══════════════════════════════════════════
+//  INIT PACIENTE
+// ═══════════════════════════════════════════
+async function initPatient(pid) {
+  showLoading('Carregando seus dados...');
+  await loadRegistros(pid);
+  await loadDiario(pid);
+  // Metas: carregar do banco
+  var pacs = await sbGet('pacientes', 'id=eq.' + pid + '&select=meta_agua,meta_treinos,nome,phone');
+  if (pacs.length) {
+    goals[pid] = { water: parseFloat(pacs[0].meta_agua)||2.5, train: pacs[0].meta_treinos||4 };
+  }
+  hideLoading();
+  document.getElementById('pName').textContent    = currentUser.name;
+  document.getElementById('pAvatar').textContent  = (currentUser.name||'?')[0];
+  buildTrainSelect();
+  buildPctBtns();
+  buildFeelBtns(pid);
+  show('patientScreen');
+  renderPatient(pid);
+}
+
+// ═══════════════════════════════════════════
+//  INIT NUTRICIONISTA
+// ═══════════════════════════════════════════
+async function initNutri() {
+  showLoading('Carregando pacientes...');
+  await loadAllPacientes();
+  // Carregar registros de todos os pacientes para status
+  var promises = PATIENT_IDS.map(function(pid) {
+    return loadRegistros(pid);
+  });
+  await Promise.all(promises);
+  hideLoading();
+  buildNutriPanel();
+}
+
+// ═══════════════════════════════════════════
+//  LOADING OVERLAY
+// ═══════════════════════════════════════════
+function showLoading(msg) {
+  var el = document.getElementById('loadingOverlay');
+  if (el) { el.querySelector('.loading-msg').textContent = msg||'Carregando...'; el.style.display='flex'; }
+}
+function hideLoading() {
+  var el = document.getElementById('loadingOverlay');
+  if (el) el.style.display='none';
+}
+
+// ═══════════════════════════════════════════
+//  RENDER PATIENT — wrapper que salva no Supabase
+// ═══════════════════════════════════════════
+async function renderPatient(pid) {
+  _renderPatientUI(pid);
+  await saveRegistro(pid, todayKey());
+}
+
+document.getElementById('loginEmail').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('loginPass').focus(); });
+document.getElementById('loginPass').addEventListener('keydown',  e=>{ if(e.key==='Enter') doLogin(); });
+</script>
+</body>
+</html>
