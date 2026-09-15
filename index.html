@@ -462,8 +462,10 @@ body{background:var(--bg);color:var(--bone);font-family:'Inter',sans-serif;-webk
         <i class="ti ti-bell"></i>
         <span class="bell-badge hidden" id="bellBadge">0</span>
       </button>
-      <button class="avatar" onclick="logout()" title="Sair" style="background:var(--steel)">Y</button>
-    </div>
+<div style="display:flex;align-items:center;gap:8px">
+  <button class="bell-btn" id="bellBtn" onclick="toggleNotifPanel()" title="Notificações"><i class="ti ti-bell"></i><span class="bell-badge hidden" id="bellBadge">0</span></button>
+  <button class="avatar" onclick="logout()" title="Sair" style="background:var(--steel)">Y</button>
+</div>    </div>
   </div>
 
   <!-- Painel de notificações -->
